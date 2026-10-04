@@ -1,0 +1,21 @@
+{
+  "name": "astrahcontent",
+  "version": "1.0.0",
+  "description": "AI Educational Video Studio powered by HyperFrames and NVIDIA Nemotron",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "hyperframes",
+    "video-generator",
+    "nemotron",
+    "educational-video",
+    "motion-graphics",
+    "canvas-animation"
+  ],
+  "author": "AstrahContent",
+  "license": "MIT"
+}

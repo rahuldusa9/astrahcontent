@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstrahContent Studio — AI Educational Video Creator</title>
+  <meta name="description" content="Professional AI motion graphics studio powered by HyperFrames and NVIDIA Nemotron." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+  <link rel="stylesheet" href="styles/studio.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="studio-layout">
+    <!-- Studio Sidebar -->
+    <aside class="studio-sidebar" id="studio-sidebar">
+      <div class="sidebar-logo">
+        <a href="index.html" class="nav-logo" title="Return to AstrahContent Landing Page">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+              <path d="M14 2L4 8v12l10 6 10-6V8L14 2z" fill="url(#sideLogoGrad)" opacity="0.9"/>
+              <path d="M14 2L4 8l10 6 10-6L14 2z" fill="url(#sideLogoGrad2)"/>
+              <defs>
+                <linearGradient id="sideLogoGrad" x1="4" y1="2" x2="24" y2="26" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#a855f7"/><stop offset="1" stop-color="#06b6d4"/>
+                </linearGradient>
+                <linearGradient id="sideLogoGrad2" x1="4" y1="2" x2="24" y2="14" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#c084fc"/><stop offset="1" stop-color="#22d3ee"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <span>AstrahContent</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="sidebar-nav-item active" id="nav-create">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Generate Video</span>
+        </button>
+        <button class="sidebar-nav-item" id="nav-preview">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
+          <span>Canvas Player</span>
+        </button>
+        <button class="sidebar-nav-item" id="nav-templates">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Templates</span>
+        </button>
+        <button class="sidebar-nav-item" id="nav-script">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Storyboard & Code</span>
+        </button>
+        <button class="sidebar-nav-item" id="nav-export">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span>Export & Render</span>
+        </button>
+        <button class="sidebar-nav-item" id="nav-settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="index.html" class="btn btn-ghost sidebar-back-btn" id="back-to-landing">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Back to Overview
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="studio-main" id="studio-main">
+
+      <!-- PANEL 1: CREATE / GENERATE -->
+      <div class="studio-panel active" id="panel-create">
+        <div class="panel-header">
+          <h1 class="panel-title">AI Video Generator</h1>
+          <p class="panel-subtitle">Powered by NVIDIA Nemotron 3 Ultra + HyperFrames animation engine</p>
+        </div>
+
+        <div class="create-form">
+          <div class="form-group">
+            <label class="form-label" for="video-topic">Topic or Educational Concept</label>
+            <textarea class="form-textarea" id="video-topic" rows="3" placeholder="E.g. How Photosynthesis converts sunlight into glucose: Light-dependent reactions and Calvin cycle..."></textarea>
+            
+            <!-- Quick preset topic chips -->
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+              <span style="font-size:0.78rem; color:var(--text-muted); align-self:center;">Try:</span>
+              <button type="button" class="topic-chip filter-btn" data-topic="Photosynthesis: How plants convert photon energy into chemical sugars">🌿 Photosynthesis</button>
+              <button type="button" class="topic-chip filter-btn" data-topic="Pythagorean Theorem: Visual geometric proof of a² + b² = c²">📐 Pythagoras</button>
+              <button type="button" class="topic-chip filter-btn" data-topic="Black Holes: Event Horizons, Gravitational Singularity and Time Dilation">🕳️ Black Holes</button>
+              <button type="button" class="topic-chip filter-btn" data-topic="Binary Search Algorithm: Step by step logarithmic time complexity divide and conquer">💻 Binary Search</button>
+            </div>
+          </div>
+
+          <div class="form-row" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div class="form-group">
+              <label class="form-label" for="anim-style">Animation Style</label>
+              <select class="form-select" id="anim-style">
+                <option value="kinetic" selected>Kinetic Motion Graphics (Abstract & Sleek)</option>
+                <option value="science">Scientific Diagrams (Atoms, Biology, Waves)</option>
+                <option value="math">Mathematical Equations & Graphs</option>
+                <option value="history">Cinematic Historical Timeline</option>
+                <option value="data">Data Analytics & Chart Visualizations</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="video-duration">Video Duration</label>
+              <select class="form-select" id="video-duration">
+                <option value="30">30 seconds (Bite-sized concept)</option>
+                <option value="60" selected>60 seconds (Standard explainer)</option>
+                <option value="90">90 seconds (Comprehensive tutorial)</option>
+                <option value="120">120 seconds (Deep-dive lesson)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Color Theme</label>
+            <div class="palette-selector">
+              <div class="palette-option active" data-palette="cosmic">
+                <div class="palette-swatch" style="background: linear-gradient(135deg, #a855f7, #06b6d4)"></div>
+                <span>Cosmic Violet</span>
+              </div>
+              <div class="palette-option" data-palette="emerald">
+                <div class="palette-swatch" style="background: linear-gradient(135deg, #10b981, #06b6d4)"></div>
+                <span>Emerald Science</span>
+              </div>
+              <div class="palette-option" data-palette="amber">
+                <div class="palette-swatch" style="background: linear-gradient(135deg, #f59e0b, #ef4444)"></div>
+                <span>Solar Flare</span>
+              </div>
+              <div class="palette-option" data-palette="sapphire">
+                <div class="palette-swatch" style="background: linear-gradient(135deg, #3b82f6, #6366f1)"></div>
+                <span>Deep Sapphire</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:24px;">
+            <button class="btn btn-primary btn-xl" id="btn-generate" style="width:100%;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
+              Generate Video with AI
+            </button>
+          </div>
+
+          <!-- Generation Progress Box -->
+          <div class="generation-progress hidden" id="generate-status">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span id="status-text" style="font-weight:600; font-size:0.92rem; color:var(--purple-400);">Connecting to AI model...</span>
+              <span class="spinner"></span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="status-progress-bar" style="width: 10%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: PREVIEW / CANVAS PLAYER -->
+      <div class="studio-panel" id="panel-preview">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <div>
+            <h1 class="panel-title">Video Preview & Timeline</h1>
+            <p class="panel-subtitle">Live canvas engine rendering HyperFrames composition</p>
+          </div>
+          <button class="btn btn-outline btn-sm" id="nav-export-quick" onclick="showPanel('export')">
+            Go to Export →
+          </button>
+        </div>
+
+        <div class="preview-workspace">
+          <div class="video-player">
+            <canvas id="previewCanvas" width="1280" height="720"></canvas>
+            <div class="player-controls">
+              <!-- Scrubber Timeline -->
+              <div class="timeline" id="timeline-track" title="Click anywhere to scrub playback time">
+                <div class="timeline-progress" id="timeline-progress"></div>
+                <div class="timeline-playhead" id="timeline-playhead"></div>
+              </div>
+              <div class="controls-row">
+                <button class="ctrl-btn" id="play-btn" title="Play / Pause">
+                  <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21"/>
+                  </svg>
+                </button>
+                <button class="ctrl-btn" id="rewind-btn" title="Rewind to start">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="19,20 9,12 19,4"/><line x1="5" y1="19" x2="5" y2="5"/>
+                  </svg>
+                </button>
+                <span class="time-display" id="time-display">0:00 / 1:00</span>
+                <div class="ctrl-spacer"></div>
+                <span style="font-size:0.75rem; color:var(--text-muted); margin-right:12px;">60 FPS · Canvas 2D</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenes Sidebar -->
+          <div class="preview-sidebar" style="background:var(--bg-surface); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border);">
+            <h3 style="font-size:1.05rem; margin-bottom:14px;">Composition Scenes</h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div style="padding:12px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.88rem;">
+                  <span>1. Title & Intro</span>
+                  <span style="color:var(--purple-400);">0:00 - 0:09</span>
+                </div>
+                <p style="font-size:0.78rem; color:var(--text-secondary); margin-top:4px;">Glowing typography reveal with cosmic radial field</p>
+              </div>
+
+              <div style="padding:12px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.88rem;">
+                  <span>2. Core Concept</span>
+                  <span style="color:var(--cyan-400);">0:09 - 0:27</span>
+                </div>
+                <p style="font-size:0.78rem; color:var(--text-secondary); margin-top:4px;">Animated breakdown boxes with connective pulse beams</p>
+              </div>
+
+              <div style="padding:12px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.88rem;">
+                  <span>3. Motion Dynamics</span>
+                  <span style="color:var(--emerald-400);">0:27 - 0:45</span>
+                </div>
+                <p style="font-size:0.78rem; color:var(--text-secondary); margin-top:4px;">Sine oscillation & active particles graph simulation</p>
+              </div>
+
+              <div style="padding:12px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.88rem;">
+                  <span>4. Key Takeaways</span>
+                  <span style="color:var(--amber-400);">0:45 - 1:00</span>
+                </div>
+                <p style="font-size:0.78rem; color:var(--text-secondary); margin-top:4px;">Bulleted checklist reveal & call-to-action outro</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 3: TEMPLATES -->
+      <div class="studio-panel" id="panel-templates">
+        <div class="panel-header">
+          <h1 class="panel-title">Video Templates Catalog</h1>
+          <p class="panel-subtitle">Select an educational motion graphic template to populate your studio project</p>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;">
+          <button class="filter-btn active studio-tpl-filter" data-cat="all">All Templates</button>
+          <button class="filter-btn studio-tpl-filter" data-cat="science">Science</button>
+          <button class="filter-btn studio-tpl-filter" data-cat="math">Math</button>
+          <button class="filter-btn studio-tpl-filter" data-cat="history">History</button>
+          <button class="filter-btn studio-tpl-filter" data-cat="data">Data Visualization</button>
+          <button class="filter-btn studio-tpl-filter" data-cat="coding">Coding & CS</button>
+        </div>
+
+        <div class="templates-grid" id="studio-templates-grid"></div>
+      </div>
+
+      <!-- PANEL 4: SCRIPT & STORYBOARD -->
+      <div class="studio-panel" id="panel-script">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <div>
+            <h1 class="panel-title">Generated Script & Storyboard</h1>
+            <p class="panel-subtitle">Inspect the Nemotron AI output and motion graphic scene directions</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-outline btn-sm" id="btn-copy-script">Copy Script</button>
+            <button class="btn btn-primary btn-sm" id="btn-regenerate">Regenerate ↺</button>
+          </div>
+        </div>
+
+        <div id="script-content">
+          <div style="padding:48px; text-align:center; background:var(--bg-surface); border-radius:var(--radius-md); border:1px solid var(--border);">
+            <div style="font-size:2.4rem; margin-bottom:12px;">📝</div>
+            <h3>No script generated yet</h3>
+            <p style="color:var(--text-secondary); margin-top:6px; margin-bottom:18px;">Enter a topic in the generator tab to produce an AI educational video script.</p>
+            <button class="btn btn-primary" onclick="showPanel('create')">Go to Generator</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 5: EXPORT & RENDER -->
+      <div class="studio-panel" id="panel-export">
+        <div class="panel-header">
+          <h1 class="panel-title">Export & CLI Command</h1>
+          <p class="panel-subtitle">Render video file locally or copy HyperFrames command line string</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+          <div style="background:var(--bg-surface); padding:24px; border-radius:var(--radius-md); border:1px solid var(--border);">
+            <h3 style="margin-bottom:16px;">Render Pipeline</h3>
+            <div class="form-group">
+              <label class="form-label" for="export-res">Resolution</label>
+              <select class="form-select" id="export-res">
+                <option value="1080p" selected>1080p Full HD (1920 × 1080)</option>
+                <option value="4k">4K Ultra HD (3840 × 2160)</option>
+                <option value="720p">720p HD (1280 × 720)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="export-fps">Frame Rate</label>
+              <select class="form-select" id="export-fps">
+                <option value="60" selected>60 FPS (Ultra Smooth)</option>
+                <option value="30">30 FPS (Standard Web)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="export-fmt">Export Format</label>
+              <select class="form-select" id="export-fmt">
+                <option value="mp4" selected>MP4 (H.264 / AAC)</option>
+                <option value="webm">WebM (VP9 / Opus)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="btn-start-export" style="width:100%; margin-top:8px;">
+              Start Rendering
+            </button>
+
+            <div class="generation-progress hidden" id="export-progress" style="margin-top:18px;">
+              <span id="export-status" style="font-weight:600; font-size:0.88rem; color:var(--cyan-400);">Starting render...</span>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="export-bar" style="width: 0%;"></div>
+              </div>
+              <div class="hidden" id="export-download-area" style="margin-top:16px;">
+                <button class="btn btn-outline btn-sm" style="color:var(--emerald-400); border-color:var(--emerald-400); width:100%;" onclick="alert('Download started: video_export.mp4')">
+                  ✓ Download video_export.mp4
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--bg-surface); padding:24px; border-radius:var(--radius-md); border:1px solid var(--border);">
+            <h3 style="margin-bottom:12px;">HyperFrames CLI Command</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:14px;">
+              To render headless in high fidelity with the official HyperFrames toolchain:
+            </p>
+            <div style="background:#000; padding:14px; border-radius:8px; border:1px solid var(--border); font-family:monospace; font-size:0.82rem; color:#a5f3fc; line-height:1.5;">
+              <pre id="cli-code">npx hyperframes render ./composition.hf.json \
+  --output ./dist/video.mp4 \
+  --fps 60 \
+  --resolution 1920x1080 \
+  --quality max</pre>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btn-copy-cli" style="margin-top:14px;">
+              Copy Command
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 6: SETTINGS -->
+      <div class="studio-panel" id="panel-settings">
+        <div class="panel-header">
+          <h1 class="panel-title">Studio Settings</h1>
+          <p class="panel-subtitle">Configure AI model credentials and export options</p>
+        </div>
+
+        <div style="max-width:640px; background:var(--bg-surface); padding:28px; border-radius:var(--radius-md); border:1px solid var(--border);">
+          <div class="form-group">
+            <label class="form-label" for="setting-api-key">OpenRouter API Key</label>
+            <input type="password" class="form-input" id="setting-api-key" placeholder="Enter your OpenRouter API Key (sk-or-v1-...)" />
+            <span style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Configured via .env or localStorage</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Active Model</label>
+            <input type="text" class="form-input" value="nvidia/nemotron-3-ultra-550b-a55b" readonly style="opacity:0.85;" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Engine Version</label>
+            <input type="text" class="form-input" value="HyperFrames v0.8.123 (Web Canvas 2D + WebGL)" readonly style="opacity:0.85;" />
+          </div>
+
+          <button class="btn btn-primary" id="btn-save-settings">Save Preferences</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Dual module/script loading for dev server and local file support -->
+  <script type="module" src="js/studio-main.js"></script>
+  <script nomodule src="app.js"></script>
+</body>
+</html>

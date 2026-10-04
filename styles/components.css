@@ -1,0 +1,120 @@
+/* ============================================================
+   AstrahContent — Reusable UI Components
+   ============================================================ */
+
+/* Navigation */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 24px;
+  background: rgba(7, 7, 17, 0.75);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; gap: 32px;
+  height: 64px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; flex-shrink: 0;
+}
+.logo-icon { display: flex; align-items: center; }
+.logo-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 1.15rem;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--purple-400), var(--cyan-400));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links { display: flex; gap: 6px; flex: 1; }
+.nav-link {
+  padding: 6px 14px; border-radius: var(--radius-sm);
+  color: var(--text-secondary); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500;
+  transition: var(--transition);
+}
+.nav-link:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 8px 18px; border-radius: var(--radius-sm);
+  font-size: 0.9rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; border: none; text-decoration: none;
+  transition: var(--transition); line-height: 1.2;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--purple-500), #7c3aed);
+  color: #fff; box-shadow: 0 4px 18px rgba(168,85,247,0.35);
+}
+.btn-primary:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 24px rgba(168,85,247,0.5);
+  background: linear-gradient(135deg, var(--purple-400), #6d28d9);
+}
+.btn-outline {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-primary); border: 1px solid var(--border-light);
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1.5px);
+}
+.btn-ghost { background: transparent; color: var(--text-secondary); }
+.btn-ghost:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+.btn-sm { padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; }
+.btn-xl { padding: 14px 28px; font-size: 1.05rem; border-radius: var(--radius-md); }
+
+/* Form Controls */
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.form-label {
+  font-size: 0.88rem; font-weight: 600; color: var(--text-secondary);
+}
+.form-textarea, .form-input, .form-select {
+  width: 100%; padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: inherit; font-size: 0.95rem;
+  transition: var(--transition); outline: none;
+}
+.form-textarea:focus, .form-input:focus, .form-select:focus {
+  border-color: var(--purple-500);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+.form-select option { background: var(--bg-card); color: var(--text-primary); }
+
+/* Filter Buttons */
+.filter-btn {
+  padding: 6px 16px; border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; transition: var(--transition);
+}
+.filter-btn:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.2); }
+.filter-btn.active {
+  background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(6,182,212,0.15));
+  border-color: var(--purple-500); color: #fff;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Cards & Badges */
+.badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--emerald-400); box-shadow: 0 0 8px var(--emerald-400);
+  display: inline-block;
+}

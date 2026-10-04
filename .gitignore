@@ -1,0 +1,23 @@
+# Sensitive environment variables and secrets
+.env
+.env.local
+.env.*.local
+apikeys.txt
+
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production output and media builds
+dist/
+output/
+*.mp4
+*.webm
+*.avi
+
+# OS temporary files
+.DS_Store
+Thumbs.db
+*.tmp
