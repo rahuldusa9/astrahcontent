@@ -243,9 +243,28 @@
 
       <!-- PANEL 3: TEMPLATES -->
       <div class="studio-panel" id="panel-templates">
-        <div class="panel-header">
-          <h1 class="panel-title">Video Templates Catalog</h1>
-          <p class="panel-subtitle">Select an educational motion graphic template to populate your studio project</p>
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 class="panel-title">Video Templates Catalog</h1>
+            <p class="panel-subtitle">Select a template or create your own with AI</p>
+          </div>
+          <button class="btn btn-primary btn-create-custom" id="btn-open-custom-tpl" title="Create a unique template with AI">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Create Custom Template with AI
+          </button>
+        </div>
+
+        <!-- AI Custom Templates Section (populated dynamically) -->
+        <div id="custom-templates-section" class="custom-tpl-section hidden">
+          <div class="custom-tpl-section-header">
+            <h3>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Your AI-Generated Templates
+            </h3>
+            <span class="custom-tpl-count" id="custom-tpl-count"></span>
+          </div>
+          <div class="templates-grid" id="custom-templates-grid"></div>
+          <div class="custom-tpl-divider"></div>
         </div>
 
         <div style="display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;">
@@ -380,6 +399,106 @@
       </div>
 
     </main>
+  </div>
+
+  <!-- AI Custom Template Creation Modal -->
+  <div class="modal-overlay hidden" id="custom-tpl-modal">
+    <div class="modal-dialog custom-tpl-dialog">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <h2>Create Custom Template with AI</h2>
+            <p>Describe your ideal template and NVIDIA Nemotron will design it for you</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btn-close-custom-tpl" title="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Step 1: Description Input -->
+        <div class="modal-step" id="custom-tpl-step-input">
+          <div class="form-group">
+            <label class="form-label" for="custom-tpl-description">Describe your template</label>
+            <textarea class="form-textarea custom-tpl-textarea" id="custom-tpl-description" rows="4"
+              placeholder="E.g. A dramatic space exploration template with nebula backgrounds, floating planet animations, and a sci-fi color palette. Scenes should transition with a zoom-through-stars effect. Great for astronomy topics..."></textarea>
+          </div>
+
+          <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="custom-tpl-category">Category hint (optional)</label>
+              <select class="form-select" id="custom-tpl-category">
+                <option value="">Let AI decide</option>
+                <option value="science">Science</option>
+                <option value="math">Math</option>
+                <option value="history">History</option>
+                <option value="data">Data Visualization</option>
+                <option value="coding">Coding &amp; CS</option>
+                <option value="explainer">General Explainer</option>
+                <option value="creative">Creative / Artistic</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="custom-tpl-duration">Target duration</label>
+              <select class="form-select" id="custom-tpl-duration">
+                <option value="">AI decides</option>
+                <option value="30">30 seconds</option>
+                <option value="60" selected>60 seconds</option>
+                <option value="90">90 seconds</option>
+                <option value="120">120 seconds</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Quick inspiration chips -->
+          <div class="custom-tpl-inspirations">
+            <span class="inspiration-label">Quick ideas:</span>
+            <button type="button" class="inspiration-chip" data-desc="Retro 80s synthwave theme with neon grid, sunset gradient, and VHS scanline effects. Perfect for tech and nostalgia content.">🌆 Synthwave</button>
+            <button type="button" class="inspiration-chip" data-desc="Deep ocean exploration theme with bioluminescent creatures, water caustic animations, and an abyssal blue-to-teal gradient.">🌊 Deep Ocean</button>
+            <button type="button" class="inspiration-chip" data-desc="Minimalist corporate infographic style with clean white space, bold accent colors, smooth number counter animations, and professional typography.">📊 Corporate Clean</button>
+            <button type="button" class="inspiration-chip" data-desc="Hand-drawn chalkboard style with chalk particle effects, sketch-style diagrams, and an organic green-black palette. Ideal for classroom explainers.">🎨 Chalkboard</button>
+            <button type="button" class="inspiration-chip" data-desc="Futuristic holographic HUD template with floating data panels, glitch transitions, and cyan-magenta color scheme. Great for cyberpunk and AI topics.">🤖 Holo HUD</button>
+          </div>
+
+          <button class="btn btn-primary btn-xl" id="btn-generate-custom-tpl" style="width:100%; margin-top:20px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Generate Template with AI
+          </button>
+        </div>
+
+        <!-- Step 2: Generation Progress -->
+        <div class="modal-step hidden" id="custom-tpl-step-progress">
+          <div class="custom-tpl-progress-card">
+            <div class="custom-tpl-progress-spinner"></div>
+            <h3 id="custom-tpl-progress-title">Designing your template...</h3>
+            <p id="custom-tpl-progress-text">NVIDIA Nemotron is crafting a unique template based on your description</p>
+            <div class="progress-bar-wrap" style="margin-top:20px;">
+              <div class="progress-bar-fill" id="custom-tpl-progress-bar" style="width:15%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Preview Generated Template -->
+        <div class="modal-step hidden" id="custom-tpl-step-preview">
+          <div class="custom-tpl-preview" id="custom-tpl-preview-content">
+            <!-- Populated dynamically -->
+          </div>
+          <div style="display:flex; gap:12px; margin-top:20px;">
+            <button class="btn btn-primary btn-xl" id="btn-save-custom-tpl" style="flex:1;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save &amp; Use Template
+            </button>
+            <button class="btn btn-outline" id="btn-retry-custom-tpl" style="flex:0 0 auto;">
+              ↺ Regenerate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Dual module/script loading for dev server and local file support -->
