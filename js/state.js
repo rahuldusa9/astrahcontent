@@ -25,6 +25,11 @@ export const state = {
   // Components
   appliedComponents:  [],     // array of component IDs from COMPONENTS registry
 
+  // Full AI Mode
+  aiGeneratedCode:  null,   // raw JS string from LLM
+  aiGeneratedMeta:  null,   // { topic, pace, cutStyle, ... generatedAt }
+
   // UI
   currentPanel:    'create',
 };
+
