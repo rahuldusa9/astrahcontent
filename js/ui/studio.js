@@ -4,6 +4,7 @@
 import { state } from '../state.js';
 import { TEMPLATES } from '../data/templates.js';
 import { callNemotronAPI } from '../api/openrouter.js';
+import { generateHyperFramesCode, getFallbackRenderFn } from '../api/hyperframes-generator.js';
 import {
   generateCustomTemplate,
   getCustomTemplates,
@@ -16,7 +17,9 @@ import {
   togglePlayback,
   startPlayback,
   stopPlayback,
-  rewindVideo
+  rewindVideo,
+  setAIRenderFn,
+  getAIRenderFn,
 } from '../canvas/player.js';
 
 export function initStudio() {
@@ -29,11 +32,173 @@ export function initStudio() {
   initSettings();
   initTimelineScrubber();
   initCustomTemplateCreator();
+  initFullAIMode();
   handleUrlQueryParams();
 
   // Initialize preview canvas immediately
   initPreviewCanvas();
 }
+
+/**
+ * Full AI Mode — LLM generates HyperFrames Canvas2D code from scratch
+ */
+function initFullAIMode() {
+  // Trigger from create panel button
+  document.getElementById('btn-full-ai-mode')?.addEventListener('click', () => {
+    showPanel('ai-mode');
+  });
+
+  // Main generate button in Full AI Mode panel
+  document.getElementById('btn-ai-mode-generate')?.addEventListener('click', runFullAIMode);
+
+  // Reset to static renderer
+  document.getElementById('btn-ai-mode-reset')?.addEventListener('click', () => {
+    setAIRenderFn(null);
+    renderPreviewFrame(state.playbackTime);
+    setAIModeStatus('idle', 'Reset to static renderer', 'Static HyperFrames mode active');
+    document.getElementById('ai-mode-meta-row')?.classList.add('hidden');
+    showPanel('preview');
+  });
+
+  // View code button
+  document.getElementById('btn-ai-mode-view-code')?.addEventListener('click', () => {
+    const content = document.getElementById('ai-code-content');
+    if (content && state.aiGeneratedCode) {
+      content.textContent = state.aiGeneratedCode;
+    }
+    document.getElementById('ai-code-modal')?.classList.remove('hidden');
+  });
+
+  // Copy code button
+  document.getElementById('btn-copy-ai-code')?.addEventListener('click', () => {
+    if (state.aiGeneratedCode) {
+      navigator.clipboard.writeText(state.aiGeneratedCode);
+      const btn = document.getElementById('btn-copy-ai-code');
+      if (btn) { btn.textContent = '✓ Copied!'; setTimeout(() => { btn.textContent = 'Copy Code'; }, 2000); }
+    }
+  });
+}
+
+async function runFullAIMode() {
+  const topic    = document.getElementById('video-topic')?.value?.trim();
+  const animStyle = document.getElementById('anim-style')?.value     || 'kinetic';
+  const duration  = parseInt(document.getElementById('video-duration')?.value || '60', 10);
+  const pace      = document.getElementById('video-pace')?.value      || 'punchy';
+  const cutStyle  = document.getElementById('video-cut-style')?.value || 'zoom-blend';
+
+  if (!topic) {
+    alert('Please enter a topic in the Generate panel first.');
+    showPanel('create');
+    document.getElementById('video-topic')?.focus();
+    return;
+  }
+
+  const styleOptions = {
+    duration, animStyle, pace, cutStyle,
+    textStyle:  state.videoStyle?.textStyle || 'kinetic',
+    colorMood:  state.videoStyle?.colorMood || 'dark-neon',
+    template:   state.activeTemplate,
+    appliedComponents: state.appliedComponents,
+  };
+
+  state.videoDuration = duration;
+
+  const genBtn = document.getElementById('btn-ai-mode-generate');
+  if (genBtn) { genBtn.disabled = true; genBtn.textContent = '⚡ Generating...'; }
+
+  document.getElementById('ai-mode-progress-wrap')?.classList.remove('hidden');
+  setAIProgressBar(5);
+
+  try {
+    setAIModeStatus('working', '🧠 Sending director brief to Nemotron...', `Topic: "${topic}" · Style: ${pace} · ${cutStyle}`);
+    setAIProgressBar(15);
+    await tick(300);
+
+    setAIModeStatus('working', '✍️ LLM writing Canvas2D animation code...', 'This may take 20-40 seconds — the model is generating complete animation logic');
+    setAIProgressBar(35);
+
+    let result;
+    try {
+      result = await generateHyperFramesCode(topic, styleOptions);
+    } catch (apiErr) {
+      console.warn('API failed, using fallback:', apiErr);
+      setAIModeStatus('working', '⚠️ API unavailable — using built-in fallback renderer', 'Injecting beautiful fallback animation...');
+      setAIProgressBar(70);
+      await tick(400);
+      const fallbackFn = getFallbackRenderFn(topic, styleOptions);
+      result = { code: '// Fallback renderer (API unavailable)', renderFn: fallbackFn, meta: { topic, ...styleOptions } };
+    }
+
+    setAIProgressBar(80);
+    setAIModeStatus('working', '⚙️ Compiling and injecting into canvas...', 'Plugging generated function into HyperFrames playback engine');
+    await tick(300);
+
+    // Inject into player
+    setAIRenderFn(result.renderFn);
+    state.aiGeneratedCode = result.code;
+    state.aiGeneratedMeta = result.meta;
+    renderPreviewFrame(0);
+
+    setAIProgressBar(100);
+
+    // Count lines
+    const lineCount = (result.code.match(/\n/g) || []).length + 1;
+
+    setAIModeStatus('done',
+      '✅ HyperFrames generated & running live!',
+      `${lineCount} lines of Canvas2D code running at 60fps in your preview`
+    );
+
+    // Update meta chips
+    const metaRow = document.getElementById('ai-mode-meta-row');
+    if (metaRow) metaRow.classList.remove('hidden');
+    const setChip = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+    setChip('ai-meta-model', `Model: Nemotron`);
+    setChip('ai-meta-topic', `Topic: ${topic.slice(0,30)}`);
+    setChip('ai-meta-style', `${pace} · ${cutStyle}`);
+    setChip('ai-meta-lines', `${lineCount} lines`);
+
+    // Auto-navigate to preview to see it running
+    await tick(600);
+    showPanel('preview');
+    startPlayback();
+
+  } catch (err) {
+    console.error('Full AI Mode error:', err);
+    setAIModeStatus('error', '❌ Generation failed', err.message || 'Check console for details');
+  } finally {
+    if (genBtn) {
+      genBtn.disabled = false;
+      genBtn.innerHTML = `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Generate HyperFrames with AI
+      `;
+    }
+    document.getElementById('ai-mode-progress-wrap')?.classList.add('hidden');
+  }
+}
+
+function setAIModeStatus(type, title, sub) {
+  const icons = { idle: '⚡', working: '🔄', done: '✅', error: '❌' };
+  const el = document.getElementById('ai-mode-status-icon');
+  const t  = document.getElementById('ai-mode-status-title');
+  const s  = document.getElementById('ai-mode-status-sub');
+  const box = document.getElementById('ai-mode-status-box');
+  if (el) el.textContent = icons[type] || '⚡';
+  if (t)  t.textContent  = title;
+  if (s)  s.textContent  = sub;
+  if (box) {
+    box.className = 'ai-mode-status-box';
+    box.classList.add(`ai-mode-status-${type}`);
+  }
+}
+
+function setAIProgressBar(pct) {
+  const bar = document.getElementById('ai-mode-progress-bar');
+  if (bar) bar.style.width = pct + '%';
+}
+
+function tick(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 /**
  * Handle URL query params like ?template=science-1

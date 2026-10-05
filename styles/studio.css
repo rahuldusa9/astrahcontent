@@ -862,3 +862,144 @@
   overflow-x: auto; white-space: pre-wrap; word-break: break-all;
   max-height: 400px; overflow-y: auto;
 }
+
+/* ============================================================
+   Full AI Mode Panel & Code Viewer
+   ============================================================ */
+
+/* Sidebar AI Mode button - special glow */
+.sidebar-ai-mode-btn {
+  position: relative;
+  background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(6,182,212,0.08)) !important;
+  border-top: 1px solid rgba(168,85,247,0.15) !important;
+}
+.sidebar-ai-mode-btn:hover {
+  background: linear-gradient(135deg, rgba(168,85,247,0.22), rgba(6,182,212,0.15)) !important;
+}
+.sidebar-ai-mode-btn.active {
+  background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(6,182,212,0.18)) !important;
+}
+
+/* Full AI Mode button on create panel */
+.btn-ai-mode {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: inherit; font-weight: 700; font-size: 0.95rem;
+  padding: 14px 24px; border-radius: var(--radius-sm);
+  border: 1px solid rgba(168,85,247,0.5);
+  background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(6,182,212,0.1));
+  color: #c084fc;
+  cursor: pointer; transition: var(--transition);
+  position: relative; overflow: hidden;
+}
+.btn-ai-mode::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(6,182,212,0.15));
+  opacity: 0; transition: opacity 0.3s;
+}
+.btn-ai-mode:hover::before { opacity: 1; }
+.btn-ai-mode:hover {
+  border-color: rgba(168,85,247,0.8);
+  box-shadow: 0 0 30px rgba(168,85,247,0.25);
+  color: #e9d5ff;
+}
+.btn-ai-mode:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.full-ai-mode-hint {
+  font-size: 0.75rem; color: var(--text-muted); text-align: center;
+  line-height: 1.4; margin-top: -4px;
+}
+
+/* Panel title icon */
+.ai-mode-title-icon { font-size: 1.2rem; }
+
+/* Status Box */
+.ai-mode-status-box {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 24px; margin-bottom: 24px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  position: relative; overflow: hidden;
+}
+.ai-mode-status-box::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(168,85,247,0.04), transparent);
+  pointer-events: none;
+}
+.ai-mode-status-box.ai-mode-status-working {
+  border-color: rgba(245,158,11,0.3);
+  animation: statusPulse 2s ease infinite;
+}
+.ai-mode-status-box.ai-mode-status-done {
+  border-color: rgba(34,197,94,0.4);
+  background: rgba(34,197,94,0.04);
+}
+.ai-mode-status-box.ai-mode-status-error {
+  border-color: rgba(239,68,68,0.4);
+  background: rgba(239,68,68,0.04);
+}
+@keyframes statusPulse {
+  0%, 100% { border-color: rgba(245,158,11,0.3); }
+  50%       { border-color: rgba(245,158,11,0.7); }
+}
+.ai-mode-status-icon { font-size: 2rem; flex-shrink: 0; }
+.ai-mode-status-content { flex: 1; }
+.ai-mode-status-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+.ai-mode-status-sub   { font-size: 0.82rem; color: var(--text-muted); }
+.ai-mode-status-progress-wrap {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: rgba(255,255,255,0.06);
+}
+.ai-mode-progress-bar {
+  height: 100%; border-radius: 0;
+  background: linear-gradient(90deg, #a855f7, #06b6d4);
+  transition: width 0.4s ease;
+}
+
+/* Meta chips */
+.ai-mode-meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.ai-mode-meta-chip {
+  font-size: 0.72rem; font-weight: 600;
+  padding: 4px 10px; border-radius: 4px;
+  background: rgba(168,85,247,0.1); color: #c084fc;
+  border: 1px solid rgba(168,85,247,0.2);
+}
+
+/* Main generate button in AI Mode panel */
+.ai-mode-generate-btn {
+  width: 100%; margin-bottom: 32px;
+  padding: 18px 24px; font-size: 1.05rem;
+  box-shadow: 0 0 40px rgba(168,85,247,0.2);
+}
+
+/* How It Works section */
+.ai-mode-how { margin-top: 8px; }
+.ai-mode-how-title {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 16px;
+}
+.ai-mode-how-steps { display: flex; flex-direction: column; gap: 16px; }
+.ai-mode-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.ai-mode-step-num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #a855f7, #06b6d4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700; color: #fff;
+}
+.ai-mode-step strong { display: block; font-size: 0.9rem; margin-bottom: 4px; color: var(--text-primary); }
+.ai-mode-step p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin: 0; }
+
+/* Code Viewer Modal */
+.ai-code-dialog { max-width: 900px; width: 94vw; max-height: 88vh; display:flex; flex-direction:column; }
+.ai-code-viewer {
+  flex: 1; margin: 0; padding: 20px 24px;
+  font-size: 0.75rem; font-family: "JetBrains Mono", "Fira Code", monospace;
+  color: #86efac; background: #000d00;
+  overflow: auto; white-space: pre; line-height: 1.6;
+  max-height: 70vh;
+}

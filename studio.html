@@ -59,6 +59,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
           <span>Export & Render</span>
         </button>
+        <button class="sidebar-nav-item sidebar-ai-mode-btn" id="nav-ai-mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          <span>Full AI</span>
+        </button>
         <button class="sidebar-nav-item" id="nav-settings">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           <span>Settings</span>
@@ -174,11 +178,16 @@
             </div>
           </div>
 
-          <div style="margin-top:24px;">
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:10px;">
             <button class="btn btn-primary btn-xl" id="btn-generate" style="width:100%;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
-              Generate Video with AI
+              Generate Script &amp; Preview
             </button>
+            <button class="btn btn-ai-mode btn-xl" id="btn-full-ai-mode" style="width:100%;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              &#x26A1; Full AI Mode &mdash; LLM Generates HyperFrames
+            </button>
+            <p class="full-ai-mode-hint">LLM writes actual Canvas2D animation code from scratch, tailored to your exact topic &amp; style</p>
           </div>
 
           <!-- Generation Progress Box -->
@@ -435,6 +444,84 @@
   </div>
 
 
+
+      <!-- PANEL 5: FULL AI MODE ═══════════════════════════════════════ -->
+      <div class="studio-panel" id="panel-ai-mode">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 class="panel-title">
+              <span class="ai-mode-title-icon">&#x26A1;</span> Full AI Mode
+            </h1>
+            <p class="panel-subtitle">Nemotron writes the complete HyperFrames Canvas2D animation code &mdash; then it runs live in your preview</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline btn-sm" id="btn-ai-mode-view-code">View Generated Code</button>
+            <button class="btn btn-ghost btn-sm" id="btn-ai-mode-reset">&#x2715; Reset to Static</button>
+          </div>
+        </div>
+
+        <!-- Status / Progress -->
+        <div class="ai-mode-status-box" id="ai-mode-status-box">
+          <div class="ai-mode-status-icon" id="ai-mode-status-icon">&#x26A1;</div>
+          <div class="ai-mode-status-content">
+            <div class="ai-mode-status-title" id="ai-mode-status-title">Ready to generate</div>
+            <div class="ai-mode-status-sub" id="ai-mode-status-sub">Enter a topic and click Generate HyperFrames</div>
+          </div>
+          <div class="ai-mode-status-progress-wrap hidden" id="ai-mode-progress-wrap">
+            <div class="ai-mode-progress-bar" id="ai-mode-progress-bar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Generation Meta -->
+        <div class="ai-mode-meta-row hidden" id="ai-mode-meta-row">
+          <div class="ai-mode-meta-chip" id="ai-meta-model">Model: Nemotron</div>
+          <div class="ai-mode-meta-chip" id="ai-meta-topic">Topic: —</div>
+          <div class="ai-mode-meta-chip" id="ai-meta-style">Style: —</div>
+          <div class="ai-mode-meta-chip" id="ai-meta-lines">Lines: —</div>
+        </div>
+
+        <!-- Big Generate Button -->
+        <button class="btn btn-ai-mode btn-xl ai-mode-generate-btn" id="btn-ai-mode-generate">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Generate HyperFrames with AI
+        </button>
+
+        <!-- How it works -->
+        <div class="ai-mode-how">
+          <div class="ai-mode-how-title">How Full AI Mode works</div>
+          <div class="ai-mode-how-steps">
+            <div class="ai-mode-step">
+              <div class="ai-mode-step-num">1</div>
+              <div>
+                <strong>You provide the brief</strong>
+                <p>Topic, pacing, cut style, color mood, template inspiration — all sent to the model</p>
+              </div>
+            </div>
+            <div class="ai-mode-step">
+              <div class="ai-mode-step-num">2</div>
+              <div>
+                <strong>Nemotron writes Canvas2D code</strong>
+                <p>The LLM receives the full HyperFrames API spec and generates a real JavaScript render function — not a description, actual animation code</p>
+              </div>
+            </div>
+            <div class="ai-mode-step">
+              <div class="ai-mode-step-num">3</div>
+              <div>
+                <strong>Code runs live in your browser</strong>
+                <p>The generated function is compiled and injected directly into the canvas player. Your video preview IS the LLM's code running at 60fps</p>
+              </div>
+            </div>
+            <div class="ai-mode-step">
+              <div class="ai-mode-step-num">4</div>
+              <div>
+                <strong>Inspect &amp; iterate</strong>
+                <p>View the raw generated code, copy it, and regenerate with different styles until it's perfect</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
   <!-- ══ MODAL: Full Template Preview ══════════════════════════════════ -->
   <div class="modal-overlay hidden" id="template-preview-modal">
     <div class="modal-dialog tpl-preview-dialog">
@@ -553,6 +640,33 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
           Create &amp; Apply Template
         </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ MODAL: AI Generated Code Viewer ════════════════════════════ -->
+  <div class="modal-overlay hidden" id="ai-code-modal">
+    <div class="modal-dialog ai-code-dialog">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-icon" style="background:rgba(168,85,247,0.15); border-color:rgba(168,85,247,0.25); color:#c084fc;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+          </div>
+          <div>
+            <h2>Generated HyperFrames Code</h2>
+            <p>Canvas2D animation code written by Nemotron</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn btn-outline btn-sm" id="btn-copy-ai-code">Copy Code</button>
+          <button class="modal-close-btn" onclick="document.getElementById('ai-code-modal').classList.add('hidden')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div style="padding:0; flex:1; overflow:hidden; display:flex; flex-direction:column;">
+        <pre class="ai-code-viewer" id="ai-code-content">// Generated code will appear here after Full AI Mode runs</pre>
       </div>
     </div>
   </div>
