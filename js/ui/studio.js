@@ -214,23 +214,41 @@ export async function generateVideo() {
     return;
   }
 
-  const style = document.getElementById('anim-style')?.value || 'kinetic';
-  const duration = document.getElementById('video-duration')?.value || '60';
+  // Collect ALL style parameters from the form
+  const animStyle  = document.getElementById('anim-style')?.value     || 'kinetic';
+  const duration   = document.getElementById('video-duration')?.value  || '60';
+  const pace       = document.getElementById('video-pace')?.value      || 'punchy';
+  const cutStyle   = document.getElementById('video-cut-style')?.value || 'zoom-blend';
+
   state.videoDuration = parseInt(duration, 10) || 60;
 
-  const genBtn = document.getElementById('btn-generate');
+  // Update global video style state so canvas renderer + API both see it
+  state.videoStyle = {
+    pace,
+    cutStyle,
+    textStyle: state.videoStyle?.textStyle || 'kinetic',
+    colorMood: state.videoStyle?.colorMood || 'dark-neon',
+  };
+
+  const styleOptions = {
+    pace,
+    cutStyle,
+    textStyle:  state.videoStyle.textStyle,
+    colorMood:  state.videoStyle.colorMood,
+    palette:    state.selectedPalette,
+    template:   state.activeTemplate,
+    components: state.appliedComponents,
+  };
+
+  const genBtn         = document.getElementById('btn-generate');
   const statusContainer = document.getElementById('generate-status');
-  const statusText = document.getElementById('status-text');
+  const statusText      = document.getElementById('status-text');
   const statusProgressBar = document.getElementById('status-progress-bar');
 
   if (genBtn) {
     genBtn.disabled = true;
-    genBtn.innerHTML = `
-      <span class="spinner"></span>
-      Generating with Nemotron...
-    `;
+    genBtn.innerHTML = `<span class="spinner"></span> Generating with Nemotron...`;
   }
-
   if (statusContainer) statusContainer.classList.remove('hidden');
 
   const updateStatus = (text, progress) => {
@@ -239,26 +257,28 @@ export async function generateVideo() {
   };
 
   try {
-    updateStatus('Connecting to NVIDIA Nemotron Ultra via OpenRouter...', 20);
-    await new Promise(r => setTimeout(r, 600));
+    updateStatus(`Connecting to NVIDIA Nemotron — building ${pace} style prompt...`, 15);
+    await new Promise(r => setTimeout(r, 400));
 
-    updateStatus('Analyzing pedagogy & generating scene storyboard...', 50);
-    const script = await callNemotronAPI(topic, style, duration);
+    updateStatus(`Applying style: ${pace} pace · ${cutStyle} cuts · ${animStyle} animation...`, 35);
+    await new Promise(r => setTimeout(r, 300));
 
-    updateStatus('Compiling HyperFrames motion graphics code...', 85);
-    await new Promise(r => setTimeout(r, 500));
+    updateStatus('Generating scene-by-scene choreography...', 55);
+    const script = await callNemotronAPI(topic, animStyle, duration, styleOptions);
+
+    updateStatus('Compiling HyperFrames motion code...', 85);
+    await new Promise(r => setTimeout(r, 400));
 
     state.generatedScript = script;
     showScriptPreview(script, topic);
 
-    updateStatus('Video generated successfully! Ready to preview.', 100);
-    await new Promise(r => setTimeout(r, 400));
+    updateStatus('✓ Video script generated! Ready to preview.', 100);
+    await new Promise(r => setTimeout(r, 350));
 
-    // Jump to preview panel
     showPanel('preview');
   } catch (err) {
     console.error('Generation error:', err);
-    updateStatus(`Error: ${err.message || 'Generation failed'}`, 100);
+    updateStatus(`Error: ${err.message || 'Generation failed. Check API key in Settings.'}`, 100);
   } finally {
     if (genBtn) {
       genBtn.disabled = false;
@@ -269,34 +289,153 @@ export async function generateVideo() {
     }
   }
 }
-window.generateVideo = generateVideo;
+
 
 /**
- * Script & Storyboard display
+ * Script & Storyboard display — renders rich director-level JSON output
  */
 export function showScriptPreview(script, topic) {
   const container = document.getElementById('script-content');
   if (!container) return;
 
-  const cleanScript = script || '';
+  // script is now a structured object from the LLM
+  if (typeof script === 'string') {
+    // Fallback: plain text
+    container.innerHTML = `<div class="script-body-text"><pre>${escapeHtml(script)}</pre></div>`;
+    return;
+  }
+
+  const palette = script.colorPalette || {};
+  const scenes  = script.scenes || [];
+  const pace     = script.pace     || state.videoStyle?.pace    || '';
+  const cutStyle = script.cutStyle || state.videoStyle?.cutStyle || '';
+
   container.innerHTML = `
+    <!-- Header Card -->
     <div class="script-header-card">
-      <div class="script-meta-badge">NVIDIA Nemotron 3 Ultra 550B</div>
-      <h3>${topic}</h3>
-      <div class="script-meta-row">
-        <span>⏱ Duration: ${state.videoDuration}s</span>
-        <span>🎨 Palette: ${state.selectedPalette}</span>
-        <span>🚀 HyperFrames Engine v0.8</span>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div class="script-meta-badge">NVIDIA Nemotron · HyperFrames Engine</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          ${pace     ? `<span class="script-style-chip style-chip-pace">${pace.replace(/-/g,' ')}</span>` : ''}
+          ${cutStyle ? `<span class="script-style-chip style-chip-cut">${cutStyle.replace(/-/g,' ')}</span>` : ''}
+          ${script.textStyle ? `<span class="script-style-chip style-chip-text">${script.textStyle}</span>` : ''}
+        </div>
       </div>
+      <h3 style="margin:12px 0 6px;">${escapeHtml(script.title || topic)}</h3>
+      ${script.hook ? `<div class="script-hook-box">💡 Hook: <em>${escapeHtml(script.hook)}</em></div>` : ''}
+      <div class="script-meta-row">
+        <span>⏱ ${script.totalDuration || state.videoDuration}s</span>
+        <span>🎬 ${scenes.length} scenes</span>
+        ${script.musicMood ? `<span>🎵 ${escapeHtml(script.musicMood)}</span>` : ''}
+        ${script.musicBPM  ? `<span>♩ ${script.musicBPM} BPM</span>` : ''}
+      </div>
+      ${palette.primary ? `
+        <div class="script-palette-row">
+          ${Object.values(palette).filter(c => c && c.startsWith('#')).map(c =>
+            `<span class="script-palette-dot" style="background:${c};" title="${c}"></span>`
+          ).join('')}
+          <span class="script-palette-label">AI color palette</span>
+        </div>
+      ` : ''}
     </div>
-    <div class="script-body-text">
-      <pre>${escapeHtml(cleanScript)}</pre>
+
+    <!-- Scene Cards -->
+    <div class="script-scenes">
+      ${scenes.map((scene, i) => `
+        <div class="script-scene-card">
+          <div class="script-scene-header">
+            <div class="script-scene-num">${scene.id || i+1}</div>
+            <div class="script-scene-meta">
+              <span class="script-scene-name">${escapeHtml(scene.name || '')}</span>
+              <div class="script-scene-tags">
+                ${scene.type ? `<span class="script-scene-type-tag">${scene.type}</span>` : ''}
+                ${scene.duration ? `<span class="script-scene-time-tag">${scene.duration}s</span>` : ''}
+                ${scene.cameraMove && scene.cameraMove !== 'static' ? `<span class="script-scene-cam-tag">📷 ${scene.cameraMove}</span>` : ''}
+              </div>
+            </div>
+          </div>
+
+          ${scene.narration ? `
+            <div class="script-scene-section">
+              <div class="script-scene-section-label">🎙 Narration</div>
+              <div class="script-narration">"${escapeHtml(scene.narration)}"</div>
+            </div>
+          ` : ''}
+
+          ${scene.visualDescription ? `
+            <div class="script-scene-section">
+              <div class="script-scene-section-label">🎨 Visual</div>
+              <div class="script-visual-desc">${escapeHtml(scene.visualDescription)}</div>
+            </div>
+          ` : ''}
+
+          ${scene.textOnScreen && scene.textOnScreen.length ? `
+            <div class="script-scene-section">
+              <div class="script-scene-section-label">📝 Text on Screen</div>
+              <div class="script-text-items">
+                ${scene.textOnScreen.map(t => `
+                  <div class="script-text-item">
+                    <span class="script-text-anim-badge">${escapeHtml(t.animation || '')}</span>
+                    <span class="script-text-value ${t.emphasis ? 'emphasis' : ''}">${escapeHtml(t.text || '')}</span>
+                    <span class="script-text-timing">${escapeHtml(t.timing || '')} · ${escapeHtml(t.position || '')}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${scene.transition ? `
+            <div class="script-scene-section script-transition-row">
+              <div class="script-scene-section-label">⚡ Transition</div>
+              <span class="script-transition-badge">${escapeHtml(scene.transition.type || '')}</span>
+              ${scene.transition.duration ? `<span class="script-transition-time">${scene.transition.duration}</span>` : ''}
+              ${scene.transition.direction ? `<span class="script-transition-dir">${scene.transition.direction}</span>` : ''}
+            </div>
+          ` : ''}
+
+          ${scene.overlays && scene.overlays.length ? `
+            <div class="script-scene-section">
+              <div class="script-scene-section-label">📰 Overlays</div>
+              ${scene.overlays.map(o => `
+                <div class="script-overlay-item">
+                  <span class="script-overlay-type">${escapeHtml(o.type || '')}</span>
+                  <span>${escapeHtml(o.content || '')}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          ${scene.keyBeat ? `
+            <div class="script-key-beat">✦ ${escapeHtml(scene.keyBeat)}</div>
+          ` : ''}
+
+          ${scene.animations && scene.animations.length ? `
+            <div class="script-anim-pills">
+              ${scene.animations.map(a => `<span class="script-anim-pill">${escapeHtml(a)}</span>`).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
     </div>
+
+    <!-- Director Notes -->
+    ${script.hyperframesDirectorNotes || script.editorNotes ? `
+      <div class="script-director-notes">
+        ${script.hyperframesDirectorNotes ? `<div><strong>🎬 Director Notes:</strong> ${escapeHtml(script.hyperframesDirectorNotes)}</div>` : ''}
+        ${script.editorNotes ? `<div style="margin-top:8px;"><strong>✂️ Edit Rationale:</strong> ${escapeHtml(script.editorNotes)}</div>` : ''}
+      </div>
+    ` : ''}
+
+    <!-- Raw JSON toggle -->
+    <details class="script-raw-details">
+      <summary>View Raw JSON output</summary>
+      <pre class="script-raw-json">${escapeHtml(JSON.stringify(script, null, 2))}</pre>
+    </details>
   `;
 
   // Also update raw editor if present
   const rawEditor = document.getElementById('script-editor');
-  if (rawEditor) rawEditor.value = cleanScript;
+  if (rawEditor) rawEditor.value = JSON.stringify(script, null, 2);
 }
 
 function initScriptControls() {
