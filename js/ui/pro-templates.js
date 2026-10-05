@@ -16,7 +16,6 @@ const previewAnimations = {};  // canvasId → rafId
 export function initProTemplatesPanel() {
   buildCategoryFilters();
   renderProTemplateGrid('all');
-  initComponentBrowser();
   initBuildTemplate();
 }
 

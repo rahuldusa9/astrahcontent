@@ -232,12 +232,13 @@ export function showPanel(name) {
 
 function initPanelNavigation() {
   const navMap = [
-    { btnId: 'nav-create', panel: 'create' },
-    { btnId: 'nav-preview', panel: 'preview' },
+    { btnId: 'nav-create',    panel: 'create'    },
+    { btnId: 'nav-preview',   panel: 'preview'   },
     { btnId: 'nav-templates', panel: 'templates' },
-    { btnId: 'nav-script', panel: 'script' },
-    { btnId: 'nav-export', panel: 'export' },
-    { btnId: 'nav-settings', panel: 'settings' },
+    { btnId: 'nav-script',    panel: 'script'    },
+    { btnId: 'nav-export',    panel: 'export'    },
+    { btnId: 'nav-ai-mode',   panel: 'ai-mode'   },
+    { btnId: 'nav-settings',  panel: 'settings'  },
   ];
 
   navMap.forEach(({ btnId, panel }) => {

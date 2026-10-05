@@ -41,9 +41,7 @@ function drawGradientRect(ctx, x, y, w, h, c1, c2, angle = 0) {
 
 function drawChromAb(ctx, W, H, amount = 2) {
   ctx.save();
-  const img = ctx.getImageData(0, 0, W, H);
-  // Simulate chromatic aberration on canvas — offset red channel slightly
-  // (lightweight version: just draw a colored layer with mix)
+  // Lightweight chromatic aberration: offset red/cyan screen layers
   ctx.globalCompositeOperation = 'screen';
   ctx.globalAlpha = 0.04;
   ctx.fillStyle = 'rgba(255,0,0,1)';
