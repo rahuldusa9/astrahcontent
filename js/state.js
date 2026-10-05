@@ -10,9 +10,20 @@ export const state = {
   playbackInterval: null,
 
   // Creation
-  selectedPalette:  'cosmic',
-  generatedScript:  null,   // { title, totalDuration, scenes[], ... }
-  activeTemplate:   null,   // TEMPLATES entry
+  selectedPalette:    'cosmic',
+  generatedScript:    null,   // { title, totalDuration, scenes[], ... }
+  activeTemplate:     null,   // PRO_TEMPLATES entry or custom
+
+  // Video Style (from style pickers)
+  videoStyle: {
+    pace:      'punchy',
+    cutStyle:  'zoom-blend',
+    textStyle: 'kinetic',
+    colorMood: 'dark-neon',
+  },
+
+  // Components
+  appliedComponents:  [],     // array of component IDs from COMPONENTS registry
 
   // UI
   currentPanel:    'create',

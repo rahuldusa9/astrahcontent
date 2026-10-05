@@ -165,6 +165,12 @@ export function applyTemplate(id) {
     else styleSelect.value = 'kinetic';
   }
 
+  // Update active template badge
+  const badge = document.getElementById('active-template-badge');
+  const badgeName = document.getElementById('active-tpl-name');
+  if (badge) badge.classList.remove('hidden');
+  if (badgeName) badgeName.textContent = `${tpl.emoji || '✦'} ${tpl.name}`;
+
   showPanel('create');
 }
 window.applyTemplate = applyTemplate;
